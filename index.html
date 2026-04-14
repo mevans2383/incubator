@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ScoutGrade – Find Your Level</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:system-ui,-apple-system,sans-serif;background:#0a0a0a;color:#fff;}
+button{font-family:inherit;cursor:pointer;}
+input,select,textarea{font-family:inherit;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:#111;}
+::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:99px;}
+
+/* ══ TAB NAV ════════════════════════════════════════════════════════════════ */
+.tab-nav{
+  position:sticky;top:0;z-index:200;background:#0d0d0d;
+  border-bottom:1px solid #1a1a1a;height:62px;padding:0 28px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-wordmark{font-size:19px;font-weight:900;letter-spacing:-.02em;flex-shrink:0;
+  background:linear-gradient(90deg,#fff 40%,#7dd3fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.tnav-tabs{display:flex;align-items:center;gap:2px;}
+.tnav-btn{
+  background:none;border:none;padding:8px 15px;border-radius:9px;
+  font-size:14px;font-weight:600;color:#94a3b8;transition:all .18s;
+  position:relative;display:flex;align-items:center;gap:6px;
+}
+.tnav-btn:hover{color:#fff;background:rgba(255,255,255,.05);}
+.tnav-btn.active{color:#fff;background:rgba(56,189,248,.08);}
+.tnav-btn.active::after{
+  content:'';position:absolute;bottom:-13px;left:14px;right:14px;
+  height:2px;background:linear-gradient(90deg,#0ea5e9,#38bdf8);border-radius:99px;
+}
+.tnav-badge{background:#38bdf8;color:#0a0a0a;border-radius:99px;font-size:10px;font-weight:800;padding:1px 6px;min-width:18px;text-align:center;}
+.tnav-dot{width:7px;height:7px;border-radius:50%;background:#38bdf8;flex-shrink:0;}
+
+/* ══ TAB PAGES ══════════════════════════════════════════════════════════════ */
+.tab-page{display:none;min-height:calc(100vh - 62px);}
+.tab-page.active{display:block;}
+#tab-profile.active{display:flex;flex-direction:column;align-items:center;}
+
+/* ══ HOME ═══════════════════════════════════════════════════════════════════ */
+#tab-home{background:radial-gradient(ellipse at 50% 0%,#0d1f35 0%,#0a0a0a 65%);}
+.home-hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 24px 32px;}
+.home-wordmark{font-size:13px;font-weight:700;letter-spacing:.12em;color:#38bdf8;text-transform:uppercase;margin-bottom:20px;}
+.home-hero h1{font-size:clamp(34px,6vw,58px);font-weight:900;line-height:1.06;margin-bottom:20px;max-width:640px;}
+.home-hero h1 em{font-style:normal;background:linear-gradient(90deg,#38bdf8,#7dd3fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.home-hero > p{font-size:18px;color:#94a3b8;max-width:460px;line-height:1.7;margin-bottom:44px;}
+.cta-btn{background:linear-gradient(135deg,#0ea5e9,#38bdf8);color:#0a0a0a;border:none;border-radius:12px;padding:16px 44px;font-size:17px;font-weight:800;box-shadow:0 0 40px rgba(56,189,248,.3);transition:all .2s;letter-spacing:-.01em;}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 0 60px rgba(56,189,248,.45);}
+.cta-sub{color:#94a3b8;font-size:13px;margin-top:14px;}
+.stats-row{display:flex;gap:52px;margin-top:60px;padding-top:40px;border-top:1px solid #1a1a1a;}
+.stat-num{font-size:30px;font-weight:800;background:linear-gradient(90deg,#fff,#7dd3fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;}
+.stat-label{font-size:13px;color:#94a3b8;}
+.trust-section{border-top:1px solid #1a1a1a;padding:48px 24px;background:rgba(56,189,248,.03);}
+.trust-inner{max-width:760px;margin:0 auto;}
+.trust-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2);color:#38bdf8;font-size:12px;font-weight:700;padding:5px 14px;border-radius:99px;margin-bottom:20px;letter-spacing:.02em;}
+.trust-title{font-size:28px;font-weight:800;color:#fff;margin-bottom:20px;line-height:1.2;}
+.trust-body{font-size:15px;color:#94a3b8;line-height:1.8;margin-bottom:14px;max-width:660px;}
+.trust-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:36px;}
+.trust-card{background:#111;border:1px solid #1a1a1a;border-radius:14px;padding:20px;display:flex;gap:14px;align-items:flex-start;text-align:left;}
+.trust-card-icon{font-size:22px;flex-shrink:0;margin-top:2px;}
+.trust-card-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:5px;}
+.trust-card-desc{font-size:13px;color:#94a3b8;line-height:1.6;}
+.how-section{padding:56px 24px 56px;display:flex;flex-direction:column;align-items:center;border-top:1px solid #1a1a1a;text-align:center;}
+.home-cta-footer{display:flex;flex-direction:column;align-items:center;padding:56px 24px 80px;border-top:1px solid #1a1a1a;gap:14px;}
+.home-cta-footer .stats-row{margin-top:20px;}
+.how-label{font-size:11px;font-weight:700;letter-spacing:.12em;color:#38bdf8;text-transform:uppercase;margin-bottom:12px;}
+.how-title{font-size:32px;font-weight:800;color:#fff;margin-bottom:56px;max-width:520px;}
+.how-steps{display:flex;align-items:flex-start;max-width:860px;width:100%;}
+.how-step{flex:1;display:flex;flex-direction:column;align-items:center;padding:0 24px;}
+.how-icon{font-size:40px;margin-bottom:16px;}
+.how-num{font-size:11px;font-weight:700;letter-spacing:.1em;color:#38bdf8;text-transform:uppercase;margin-bottom:8px;}
+.how-step-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:10px;}
+.how-step-desc{font-size:14px;color:#94a3b8;line-height:1.7;max-width:220px;}
+.how-arrow{font-size:24px;color:#1e3a4a;margin-top:44px;flex-shrink:0;}
+
+/* ══ TAB GUIDE ══════════════════════════════════════════════════════════════ */
+.tabguide-section{padding:56px 24px 56px;border-top:1px solid #1a1a1a;}
+.tabguide-inner{max-width:1020px;margin:0 auto;}
+.tabguide-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.tg-card{background:#111;border:1px solid #1a1a1a;border-radius:18px;padding:26px;display:flex;flex-direction:column;gap:14px;}
+.tg-card-highlight{border-color:rgba(56,189,248,.3);background:linear-gradient(135deg,#0d1f2e 0%,#111 100%);box-shadow:0 0 40px rgba(56,189,248,.07);}
+.tg-header{display:flex;align-items:center;gap:12px;}
+.tg-icon{font-size:28px;flex-shrink:0;}
+.tg-tab-pill{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:99px;padding:4px 12px;font-size:12px;font-weight:700;color:#94a3b8;}
+.tg-tab-pill-hot{background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:#38bdf8;}
+.tg-title{font-size:17px;font-weight:800;color:#fff;line-height:1.3;}
+.tg-desc{font-size:13px;color:#94a3b8;line-height:1.7;}
+.tg-tip{background:#0d0d0d;border:1px solid #1e1e1e;border-radius:10px;padding:12px;font-size:12px;color:#94a3b8;line-height:1.6;margin-top:auto;}
+.tg-card-highlight .tg-tip{border-color:rgba(56,189,248,.15);background:rgba(56,189,248,.04);}
+.tg-tip-label{font-weight:700;color:#38bdf8;display:block;margin-bottom:3px;}
+
+/* ══ PROFILE TAB ════════════════════════════════════════════════════════════ */
+#tab-profile{background:radial-gradient(ellipse at 50% 0%,#0d1f35 0%,#0a0a0a 70%);}
+.profile-tab-header{text-align:center;padding:48px 24px 32px;}
+.profile-tab-label{font-size:11px;font-weight:700;letter-spacing:.1em;color:#38bdf8;text-transform:uppercase;margin-bottom:8px;}
+.profile-tab-title{font-size:24px;font-weight:800;color:#fff;}
+.form-wrap{width:100%;max-width:520px;padding:0 24px 80px;}
+.steps{display:flex;align-items:center;margin-bottom:28px;}
+.step-dot{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;transition:all .3s;}
+.step-dot.done{background:linear-gradient(135deg,#0ea5e9,#38bdf8);color:#0a0a0a;}
+.step-dot.active{background:#1a3a4a;border:2px solid #38bdf8;color:#38bdf8;}
+.step-dot.pending{background:#1a1a1a;color:#94a3b8;}
+.step-line{flex:1;height:2px;transition:background .3s;}
+.step-line.done{background:linear-gradient(90deg,#0ea5e9,#38bdf8);}
+.step-line.pending{background:#1e1e1e;}
+.form-card{background:#111;border:1px solid #1e1e1e;border-radius:18px;padding:32px 34px;box-shadow:0 4px 40px rgba(0,0,0,.5);}
+.form-card h2{font-size:21px;font-weight:700;color:#fff;margin-bottom:4px;}
+.form-card .sub{font-size:14px;color:#94a3b8;margin-bottom:22px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase;}
+.field .hint{font-size:12px;color:#94a3b8;margin-top:4px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;}
+.finput,.fselect,.ftextarea{width:100%;padding:10px 13px;border-radius:9px;border:1px solid #222;font-size:14px;color:#fff;background:#0d0d0d;outline:none;transition:border-color .2s,box-shadow .2s;}
+.finput:focus,.fselect:focus,.ftextarea:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.1);}
+.fselect option{background:#111;}
+.ftextarea{min-height:90px;resize:vertical;line-height:1.5;}
+.form-nav{display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
+.btn-back{background:none;border:1px solid #222;border-radius:9px;padding:10px 20px;font-size:14px;color:#94a3b8;font-weight:600;transition:border-color .2s;}
+.btn-back:hover{border-color:#38bdf8;color:#38bdf8;}
+.btn-next{background:linear-gradient(135deg,#0ea5e9,#38bdf8);border:none;border-radius:9px;padding:10px 24px;font-size:14px;color:#0a0a0a;font-weight:800;transition:all .2s;}
+.btn-next:disabled{background:#1e1e1e;color:#94a3b8;cursor:not-allowed;}
+.btn-next:not(:disabled):hover{box-shadow:0 0 20px rgba(56,189,248,.35);}
+.form-foot{text-align:center;font-size:12px;color:#94a3b8;margin-top:14px;}
+.region-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.region-chip{padding:7px 14px;border-radius:99px;font-size:13px;font-weight:600;border:1px solid #222;background:#0d0d0d;color:#94a3b8;cursor:pointer;transition:all .18s;}
+.region-chip.active{border-color:#38bdf8;background:rgba(56,189,248,.12);color:#38bdf8;}
+.rank-list{display:flex;flex-direction:column;gap:8px;margin-top:8px;user-select:none;}
+.rank-item{display:flex;align-items:center;gap:12px;background:#0d0d0d;border:1px solid #222;border-radius:10px;padding:11px 14px;cursor:grab;transition:background .15s,border-color .15s;}
+.rank-item:active{cursor:grabbing;}
+.rank-item.dragging{opacity:.4;border-color:#38bdf8;}
+.rank-handle{font-size:16px;color:#94a3b8;flex-shrink:0;}
+.rank-emoji{font-size:18px;flex-shrink:0;}
+.rank-label{font-size:14px;font-weight:600;color:#fff;flex:1;}
+.rank-num{width:24px;height:24px;border-radius:50%;background:#1a1a1a;border:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#94a3b8;flex-shrink:0;}
+.rank-hint{font-size:12px;color:#94a3b8;margin-top:6px;}
+.honesty-note{display:flex;gap:10px;align-items:flex-start;background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.15);border-radius:10px;padding:12px 14px;margin-bottom:20px;font-size:13px;color:#94a3b8;line-height:1.6;}
+.honesty-note strong{color:#7dd3fc;}
+.honesty-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+
+/* ══ SCHOOLS TAB ════════════════════════════════════════════════════════════ */
+#tab-schools{background:#0a0a0a;}
+.schools-inner{max-width:1200px;margin:0 auto;padding:28px 24px;}
+.empty-schools{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 24px;min-height:70vh;}
+.empty-schools-icon{font-size:56px;margin-bottom:20px;}
+.empty-schools h2{font-size:22px;font-weight:800;color:#fff;margin-bottom:10px;}
+.empty-schools p{font-size:15px;color:#94a3b8;max-width:360px;line-height:1.7;margin-bottom:28px;}
+.profile-banner{background:linear-gradient(135deg,#0d1f35 0%,#0a2540 100%);border:1px solid #1a3a50;border-radius:16px;padding:22px 28px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:flex-start;}
+.banner-label{font-size:10px;font-weight:700;letter-spacing:.1em;color:#38bdf8;margin-bottom:5px;text-transform:uppercase;}
+.banner-name{font-size:22px;font-weight:800;color:#fff;margin-bottom:4px;}
+.banner-sub{font-size:14px;color:#7dd3fc;}
+.banner-gpa-box{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2);border-radius:12px;padding:10px 20px;text-align:center;}
+.banner-gpa-lbl{font-size:10px;color:#38bdf8;font-weight:700;letter-spacing:.08em;margin-bottom:3px;text-transform:uppercase;}
+.banner-gpa-val{font-size:22px;font-weight:800;color:#fff;}
+.banner-stats{display:flex;gap:28px;margin-top:16px;padding-top:16px;border-top:1px solid rgba(56,189,248,.1);}
+.banner-stat-lbl{font-size:10px;color:#38bdf8;font-weight:700;letter-spacing:.08em;margin-bottom:2px;text-transform:uppercase;}
+.banner-stat-val{font-size:14px;font-weight:700;color:#fff;}
+.dash-cols{display:grid;grid-template-columns:290px 1fr;gap:22px;align-items:start;}
+.lcard{background:#111;border:1px solid #1a1a1a;border-radius:16px;padding:22px;margin-bottom:18px;}
+.lcard-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:3px;}
+.lcard-sub{font-size:12px;color:#94a3b8;margin-bottom:18px;}
+.div-row{margin-bottom:14px;}
+.div-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.div-name{font-size:12px;font-weight:500;color:#94a3b8;}
+.div-name.best{font-weight:700;color:#fff;}
+.best-pill{background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.3);color:#38bdf8;font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px;margin-left:6px;letter-spacing:.04em;}
+.div-pct{font-size:12px;font-weight:700;}
+.div-track{height:6px;background:#1a1a1a;border-radius:99px;overflow:hidden;}
+.div-fill{height:100%;border-radius:99px;width:0%;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.div-desc{font-size:11px;color:#94a3b8;margin-top:2px;}
+.insight-box{background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.15);border-radius:10px;padding:14px;margin-top:12px;}
+.insight-label{font-size:10px;font-weight:700;letter-spacing:.08em;color:#38bdf8;text-transform:uppercase;margin-bottom:4px;}
+.insight-box p{font-size:12px;color:#7dd3fc;line-height:1.6;}
+.subtabs{display:flex;gap:4px;background:#111;border:1px solid #1a1a1a;border-radius:10px;padding:4px;width:fit-content;}
+.subtab{padding:7px 16px;border-radius:7px;font-size:13px;font-weight:600;border:none;background:transparent;color:#94a3b8;transition:all .2s;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.subtab.active{background:#1a3a4a;color:#38bdf8;}
+.subtab-badge{background:#38bdf8;color:#0a0a0a;border-radius:99px;font-size:10px;font-weight:800;padding:1px 6px;}
+.chips{display:flex;gap:7px;margin-bottom:16px;}
+.chip{padding:5px 13px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid #1e1e1e;background:#111;color:#94a3b8;cursor:pointer;transition:all .15s;}
+.chip.active{border-color:#38bdf8;background:rgba(56,189,248,.1);color:#38bdf8;}
+.sort-sel{padding:7px 12px;border-radius:8px;border:1px solid #1e1e1e;font-size:12px;color:#94a3b8;background:#111;cursor:pointer;outline:none;}
+.school-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.school-card{background:#111;border:1px solid #1a1a1a;border-radius:14px;overflow:hidden;transition:all .22s;position:relative;}
+.school-card:hover{border-color:#38bdf8;box-shadow:0 0 30px rgba(56,189,248,.1);transform:translateY(-2px);}
+.school-bar{height:4px;}
+.school-body{padding:15px 16px;}
+.school-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+.school-logo-box{width:42px;height:42px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:11px;}
+.school-info{margin-left:10px;}
+.school-name{font-weight:700;font-size:13px;color:#fff;line-height:1.3;}
+.school-conf{font-size:11px;color:#94a3b8;margin-top:1px;}
+.fit-ring{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border-width:2.5px;border-style:solid;}
+.fit-num{font-weight:800;font-size:13px;line-height:1;}
+.fit-lbl{font-size:7px;color:#94a3b8;font-weight:600;margin-top:1px;}
+.school-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.dbadge{border-radius:5px;font-size:10px;font-weight:800;padding:2px 7px;letter-spacing:.04em;}
+.fbadge{border-radius:99px;font-size:10px;font-weight:700;padding:2px 8px;}
+.school-details{display:grid;grid-template-columns:1fr 1fr;gap:4px 0;margin-bottom:12px;}
+.school-detail{display:flex;align-items:center;gap:4px;font-size:11px;color:#94a3b8;}
+.save-btn{width:100%;padding:8px 0;border-radius:7px;font-weight:600;font-size:12px;border:1px solid #222;background:#0d0d0d;color:#94a3b8;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.save-btn:hover{border-color:#38bdf8;color:#38bdf8;}
+.save-btn.saved{border-color:#38bdf8;background:rgba(56,189,248,.1);color:#38bdf8;}
+.upgrade-banner{background:linear-gradient(135deg,#0d1f35 0%,#0a2540 100%);border:1px solid #1a3a50;border-radius:13px;padding:18px 22px;margin-top:18px;display:flex;justify-content:space-between;align-items:center;}
+.upgrade-title{color:#fff;font-weight:700;font-size:14px;margin-bottom:4px;}
+.upgrade-sub{color:#94a3b8;font-size:12px;}
+.upgrade-btn{background:linear-gradient(135deg,#0ea5e9,#38bdf8);color:#0a0a0a;border:none;border-radius:8px;padding:9px 18px;font-weight:700;font-size:13px;flex-shrink:0;margin-left:18px;}
+.empty-folder{background:#111;border:1px solid #1a1a1a;border-radius:14px;padding:56px 24px;text-align:center;}
+.empty-folder p{color:#94a3b8;font-size:14px;margin-top:10px;line-height:1.6;}
+.folder-list{display:flex;flex-direction:column;gap:14px;}
+.folder-school-card{background:#111;border:1px solid #1a1a1a;border-radius:14px;overflow:hidden;}
+.fsc-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;transition:background .2s;}
+.fsc-header:hover{background:#151515;}
+.fsc-left{display:flex;align-items:center;gap:12px;}
+.fsc-logo{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:11px;flex-shrink:0;}
+.fsc-name{font-weight:700;font-size:14px;color:#fff;}
+.fsc-meta{font-size:12px;color:#94a3b8;margin-top:2px;display:flex;align-items:center;gap:8px;}
+.fsc-right{display:flex;align-items:center;gap:10px;}
+.fsc-fitscore{font-size:13px;font-weight:800;}
+.fsc-chevron{font-size:12px;color:#94a3b8;transition:transform .2s;}
+.fsc-chevron.open{transform:rotate(180deg);}
+.fsc-steps{display:none;padding:0 18px 18px;}
+.fsc-steps.open{display:block;}
+.fsc-divider{height:1px;background:#1a1a1a;margin-bottom:16px;}
+.steps-title{font-size:11px;font-weight:700;letter-spacing:.08em;color:#38bdf8;text-transform:uppercase;margin-bottom:12px;}
+.action-item{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:10px;padding:12px 14px;}
+.action-icon{width:32px;height:32px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.action-icon.email-icon{background:rgba(56,189,248,.1);}
+.action-icon.camp-icon{background:rgba(250,204,21,.08);}
+.action-icon.followup-icon{background:rgba(167,139,250,.1);}
+.action-title{font-size:13px;font-weight:600;color:#fff;margin-bottom:3px;}
+.action-detail{font-size:12px;color:#94a3b8;line-height:1.5;}
+.action-detail a{color:#38bdf8;text-decoration:none;}
+.action-detail a:hover{text-decoration:underline;}
+.action-date{margin-top:5px;display:inline-flex;align-items:center;gap:5px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.15);border-radius:99px;padding:2px 9px;font-size:11px;font-weight:600;color:#38bdf8;}
+.action-date.camp{background:rgba(250,204,21,.08);border-color:rgba(250,204,21,.2);color:#fbbf24;}
+.action-date.followup{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.2);color:#a78bfa;}
+.remove-btn{background:none;border:none;color:#94a3b8;font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;transition:all .2s;cursor:pointer;}
+.remove-btn:hover{color:#ef4444;background:rgba(239,68,68,.1);}
+.school-fit-blurb{font-size:11px;color:#94a3b8;line-height:1.5;margin-bottom:7px;padding:7px 10px;background:#0d0d0d;border-radius:7px;border:1px solid #1a1a1a;}
+.blurb-label{font-weight:700;font-size:10px;letter-spacing:.04em;display:block;margin-bottom:2px;}
+.blurb-fit{color:#38bdf8;}
+.blurb-warn{color:#fbbf24;}
+.school-search-wrap{background:#111;border:1px solid #1a1a1a;border-radius:14px;padding:18px;margin-bottom:16px;}
+.school-search-label{font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:10px;}
+.school-search-input{margin-bottom:0;}
+.search-result-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:9px;background:#0d0d0d;border:1px solid #1e1e1e;margin-top:8px;transition:border-color .15s;}
+.search-result-item:hover{border-color:#38bdf8;}
+.search-result-left{display:flex;align-items:center;gap:10px;}
+.search-result-logo{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.search-result-name{font-size:13px;font-weight:600;color:#fff;}
+.search-result-meta{font-size:11px;color:#94a3b8;margin-top:1px;}
+.search-add-btn{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2);color:#38bdf8;border-radius:7px;padding:5px 12px;font-size:12px;font-weight:700;transition:all .18s;flex-shrink:0;}
+.search-add-btn:hover{background:rgba(56,189,248,.2);}
+.search-add-btn.saved{background:rgba(56,189,248,.15);color:#38bdf8;}
+.search-no-results{font-size:13px;color:#94a3b8;padding:10px 0;}
+.btn-ghost{background:none;border:1px solid #222;border-radius:8px;padding:7px 14px;font-size:13px;color:#94a3b8;font-weight:600;transition:all .2s;}
+.btn-ghost:hover{border-color:#38bdf8;color:#38bdf8;}
+
+/* ══ ACTION PLAN TAB ════════════════════════════════════════════════════════ */
+#tab-action{background:#0a0a0a;}
+.action-inner{max-width:760px;margin:0 auto;padding:36px 24px;}
+.action-page-title{font-size:26px;font-weight:800;color:#fff;margin-bottom:6px;}
+.action-page-sub{font-size:14px;color:#94a3b8;margin-bottom:32px;}
+.timeline-month{margin-bottom:32px;}
+.timeline-month-label{font-size:11px;font-weight:700;letter-spacing:.1em;color:#38bdf8;text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #1a1a1a;}
+.timeline-tasks{display:flex;flex-direction:column;gap:10px;}
+.timeline-task{display:flex;gap:14px;align-items:flex-start;background:#111;border:1px solid #1a1a1a;border-radius:12px;padding:14px 16px;transition:border-color .18s;}
+.timeline-task:hover{border-color:#1e2e3e;}
+.tt-icon{width:36px;height:36px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.tt-icon.email{background:rgba(56,189,248,.1);}
+.tt-icon.camp{background:rgba(250,204,21,.08);}
+.tt-icon.followup{background:rgba(167,139,250,.1);}
+.tt-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:2px;}
+.tt-school{font-size:12px;color:#94a3b8;margin-bottom:5px;}
+.tt-date{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:2px 9px;font-size:11px;font-weight:600;}
+.tt-date.email{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);color:#38bdf8;}
+.tt-date.camp{background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.2);color:#fbbf24;}
+.tt-date.followup{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);color:#a78bfa;}
+.tt-date.dm{background:rgba(29,161,242,.08);border:1px solid rgba(29,161,242,.2);color:#1da1f2;}
+.tt-date.social{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);color:#34d399;}
+.tt-icon.dm{background:rgba(29,161,242,.1);}
+.tt-icon.social{background:rgba(52,211,153,.1);}
+.tt-guidance{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:9px;padding:12px 14px;margin-top:4px;}
+.tt-guidance-label{font-size:11px;font-weight:700;color:#94a3b8;letter-spacing:.04em;margin-bottom:8px;text-transform:uppercase;}
+.tt-guidance-list{padding-left:16px;display:flex;flex-direction:column;gap:5px;}
+.tt-guidance-list li{font-size:12px;color:#94a3b8;line-height:1.55;}
+.empty-action{display:flex;flex-direction:column;align-items:center;text-align:center;padding:60px 0;}
+.empty-action-icon{font-size:52px;margin-bottom:18px;}
+.empty-action h2{font-size:20px;font-weight:800;color:#fff;margin-bottom:10px;}
+.empty-action p{font-size:14px;color:#94a3b8;max-width:340px;line-height:1.7;margin-bottom:24px;}
+
+/* ══ ABOUT TAB ══════════════════════════════════════════════════════════════ */
+.coming-soon{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px;min-height:80vh;}
+.coming-soon-icon{font-size:60px;margin-bottom:24px;}
+.coming-soon-badge{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2);color:#38bdf8;font-size:12px;font-weight:700;padding:5px 14px;border-radius:99px;margin-bottom:20px;letter-spacing:.04em;}
+.coming-soon h2{font-size:28px;font-weight:800;color:#fff;margin-bottom:12px;}
+.coming-soon p{font-size:16px;color:#94a3b8;max-width:360px;line-height:1.7;}
+
+/* ══ LOADING OVERLAY ════════════════════════════════════════════════════════ */
+#loading-overlay{position:fixed;inset:0;z-index:9999;background:rgba(10,10,10,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;}
+.loader-content{display:flex;flex-direction:column;align-items:center;gap:20px;}
+.helmet-ring{position:relative;display:flex;align-items:center;justify-content:center;width:120px;height:120px;}
+.spin-ring{position:absolute;inset:0;animation:spin 1.4s linear infinite;}
+.helmet-icon{position:absolute;display:flex;align-items:center;justify-content:center;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loader-title{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.01em;}
+.loader-sub{font-size:14px;color:#38bdf8;font-weight:500;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:.6;}50%{opacity:1;}}
+
+/* ══ MOBILE ═════════════════════════════════════════════════════════════════ */
+@media(max-width:640px){
+  .tab-nav{padding:0 10px;}
+  .tnav-tabs{overflow-x:auto;gap:0;}
+  .tnav-btn{padding:6px 10px;font-size:12px;}
+  .tnav-btn.active::after{bottom:-11px;}
+  .nav-wordmark{font-size:15px;}
+  .home-hero{padding:60px 20px 40px;min-height:auto;}
+  .stats-row{gap:24px;flex-wrap:wrap;justify-content:center;}
+  .trust-cards{grid-template-columns:1fr;}
+  .trust-section{padding:48px 20px;}
+  .tabguide-grid{grid-template-columns:1fr;}
+  .tabguide-section{padding:48px 20px 72px;}
+  .how-steps{flex-direction:column;align-items:center;}
+  .how-arrow{transform:rotate(90deg);margin:4px 0;}
+  .how-step{padding:0;}
+  .cta-btn{width:100%;text-align:center;}
+  .form-wrap{padding:0 16px 60px;}
+  .form-card{padding:22px 18px;}
+  .row2{grid-template-columns:1fr;}
+  .dash-cols{grid-template-columns:1fr;}
+  .profile-banner{flex-direction:column;gap:14px;padding:18px 16px;}
+  .banner-stats{flex-wrap:wrap;gap:16px;}
+  .school-grid{grid-template-columns:1fr;}
+  .chips{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
+  .chip{flex-shrink:0;}
+  .subtabs{width:100%;}
+  .subtab{flex:1;justify-content:center;font-size:12px;padding:7px 8px;}
+  .upgrade-banner{flex-direction:column;gap:14px;align-items:flex-start;}
+  .upgrade-btn{margin-left:0;width:100%;text-align:center;}
+  .region-chips{gap:6px;}
+}
+</style>
+</head>
+<body>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay" style="display:none;">
+  <div class="loader-content">
+    <div class="helmet-ring">
+      <svg class="spin-ring" viewBox="0 0 100 100" width="120" height="120">
+        <circle cx="50" cy="50" r="44" fill="none" stroke="#1a2a3a" stroke-width="6"/>
+        <circle cx="50" cy="50" r="44" fill="none" stroke="#38bdf8" stroke-width="6" stroke-dasharray="80 196" stroke-linecap="round"/>
+      </svg>
+      <div class="helmet-icon">
+        <svg viewBox="0 0 64 40" width="64" height="40" fill="none">
+          <!-- Football body -->
+          <ellipse cx="32" cy="20" rx="30" ry="18" fill="#0ea5e9"/>
+          <!-- Seam line vertical -->
+          <line x1="32" y1="3" x2="32" y2="37" stroke="#7dd3fc" stroke-width="1.5" opacity=".6"/>
+          <!-- Lace stitches -->
+          <line x1="26" y1="11" x2="38" y2="11" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+          <line x1="26" y1="17" x2="38" y2="17" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+          <line x1="26" y1="23" x2="38" y2="23" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+          <line x1="26" y1="29" x2="38" y2="29" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+          <!-- Tips highlight -->
+          <ellipse cx="32" cy="20" rx="30" ry="18" fill="none" stroke="#7dd3fc" stroke-width="1" opacity=".3"/>
+        </svg>
+      </div>
+    </div>
+    <div class="loader-title">Analyzing your profile…</div>
+    <div class="loader-sub" id="loader-sub">Evaluating division fit</div>
+  </div>
+</div>
+
+<!-- App -->
+<div class="app">
+
+  <!-- Tab Nav -->
+  <nav class="tab-nav">
+    <span class="nav-wordmark">ScoutGrade</span>
+    <div class="tnav-tabs">
+      <button class="tnav-btn active" id="tnav-home"    onclick="goTab('home')">Home</button>
+      <button class="tnav-btn"        id="tnav-profile" onclick="goTab('profile')">My Profile</button>
+      <button class="tnav-btn"        id="tnav-schools" onclick="goTab('schools')">Schools <span id="schools-dot" class="tnav-dot" style="display:none"></span></button>
+      <button class="tnav-btn"        id="tnav-action"  onclick="goTab('action')">Action Plan <span id="action-badge" class="tnav-badge" style="display:none">0</span></button>
+      <button class="tnav-btn"        id="tnav-about"   onclick="goTab('about')">About</button>
+    </div>
+  </nav>
+
+  <!-- HOME -->
+  <div id="tab-home" class="tab-page active">
+    <div class="home-hero">
+      <div class="home-wordmark">ScoutGrade</div>
+      <h1>Find out exactly<br><em>what level you can play at.</em></h1>
+      <p>Stop guessing. Get a personalized division assessment and matched school list based on your real profile — in 5 minutes.</p>
+    </div>
+
+    <!-- Trust / Honesty section -->
+    <div class="trust-section">
+      <div class="trust-inner">
+        <div class="trust-badge">🔒 Built for athletes, not coaches</div>
+        <h2 class="trust-title">We're going to be straight with you.</h2>
+        <p class="trust-body">ScoutGrade is a tool <strong>for you</strong> — the athlete. Coaches will never see your profile. There's no recruiting database, no exposure service, no one watching over your shoulder.</p>
+        <p class="trust-body">That means there's also no point in inflating your stats. If you tell us you ran a 4.3 forty and you didn't, we'll match you to D1 programs you have no shot at — and you'll waste time chasing the wrong schools.</p>
+        <p class="trust-body" style="color:#fff;font-weight:600;">We're not going to tell you you're a D1 player if you're not. We're going to tell you the truth — and help you find the schools where you actually have a real shot to play and thrive.</p>
+        <div class="trust-cards">
+          <div class="trust-card"><div class="trust-card-icon">🎯</div><div><div class="trust-card-title">Find your real level</div><div class="trust-card-desc">D2, D3, and NAIA have thousands of roster spots and real scholarship money. The right fit beats a reach school every time.</div></div></div>
+          <div class="trust-card"><div class="trust-card-icon">📵</div><div><div class="trust-card-title">Coaches never see this</div><div class="trust-card-desc">Your profile data stays private. This is your planning tool, not a recruitment submission. Be honest so it works.</div></div></div>
+          <div class="trust-card"><div class="trust-card-icon">✅</div><div><div class="trust-card-title">Honest matches only</div><div class="trust-card-desc">Our algorithm is calibrated to be realistic. A backup with 2 career TDs won't get matched to Power 5 programs — and that's a good thing.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="how-section">
+      <div class="how-label">How It Works</div>
+      <h2 class="how-title">From profile to action plan in minutes</h2>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-icon">📋</div>
+          <div class="how-num">Step 1</div>
+          <div class="how-step-title">Build Your Profile</div>
+          <div class="how-step-desc">Enter your measurables, academic stats, high school, and football career highlights.</div>
+        </div>
+        <div class="how-arrow">→</div>
+        <div class="how-step">
+          <div class="how-icon">📊</div>
+          <div class="how-num">Step 2</div>
+          <div class="how-step-title">Get Analytically Matched</div>
+          <div class="how-step-desc">Our detailed algorithm weighs your size, speed, production, academics, high school program, and class year across 1,200+ programs to find your realistic division fit.</div>
+        </div>
+        <div class="how-arrow">→</div>
+        <div class="how-step">
+          <div class="how-icon">📅</div>
+          <div class="how-num">Step 3</div>
+          <div class="how-step-title">Take Action</div>
+          <div class="how-step-desc">Save schools you like and get a personalized action plan with coach contacts, camp dates, and follow-up reminders.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Guide -->
+    <div class="tabguide-section">
+      <div class="tabguide-inner">
+        <div class="how-label" style="text-align:center;display:block;margin-bottom:12px;">Your Roadmap</div>
+        <h2 class="how-title" style="text-align:center;margin:0 auto 48px;">Here's how to use each tab</h2>
+        <div class="tabguide-grid">
+
+          <div class="tg-card">
+            <div class="tg-header">
+              <div class="tg-icon">📋</div>
+              <div class="tg-tab-pill">My Profile</div>
+            </div>
+            <div class="tg-title">Build your recruiting profile</div>
+            <div class="tg-desc">Fill out all 5 steps as honestly as possible. Your measurables, academics, high school program, career summary, and preferences all feed the algorithm. You can come back and edit anytime — re-submitting will refresh your school matches.</div>
+            <div class="tg-tip"><span class="tg-tip-label">💡 Pro tip</span> The career summary field is the most underrated input. The more detail you include about your stats, awards, and level of competition, the more accurate your matches will be.</div>
+          </div>
+
+          <div class="tg-card">
+            <div class="tg-header">
+              <div class="tg-icon">🏟️</div>
+              <div class="tg-tab-pill">Schools</div>
+            </div>
+            <div class="tg-title">Explore your analytically matched schools</div>
+            <div class="tg-desc">After submitting your profile, you'll see a division fit breakdown and 8 matched schools ranked by fit score. Each card shows why a school is a good fit and what to be aware of. Save any school to add it to your Action Plan.</div>
+            <div class="tg-tip"><span class="tg-tip-label">💡 Pro tip</span> Don't only save your top picks. Save a range — your best fits, a couple of reaches, and a safety or two. Your action plan will cover all of them.</div>
+          </div>
+
+          <div class="tg-card tg-card-highlight">
+            <div class="tg-header">
+              <div class="tg-icon">📅</div>
+              <div class="tg-tab-pill tg-tab-pill-hot">Action Plan ← Don't skip this</div>
+            </div>
+            <div class="tg-title">Follow your recruiting timeline</div>
+            <div class="tg-desc">Every school you save generates a set of tasks — an intro email, a Twitter DM, a camp visit, and a follow-up — all organized into one chronological timeline. You'll also see seasonal social media tasks to keep your recruiting visible year-round.</div>
+            <div class="tg-tip"><span class="tg-tip-label">🔥 This is the tab that matters most.</span> Most athletes never reach out to coaches proactively. The ones who do get recruited. This tab gives you a step-by-step schedule so you never fall behind.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Final CTA -->
+    <div class="home-cta-footer">
+      <button class="cta-btn" onclick="goTab('profile')">Get Started →</button>
+      <p class="cta-sub">Free · No account required · Takes 5 minutes</p>
+      <div class="stats-row">
+        <div><div class="stat-num">1,200+</div><div class="stat-label">Schools in our system</div></div>
+        <div><div class="stat-num">6</div><div class="stat-label">Divisions covered</div></div>
+        <div><div class="stat-num">$0</div><div class="stat-label">vs. $400–$4,000 NCSA fees</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY PROFILE -->
+  <div id="tab-profile" class="tab-page">
+    <div class="profile-tab-header">
+      <div class="profile-tab-label">Step-by-step</div>
+      <div class="profile-tab-title">Build your recruiting profile</div>
+    </div>
+    <div class="form-wrap">
+      <div class="steps" id="step-indicator"></div>
+      <div class="form-card">
+        <!-- Step 1 -->
+        <div id="step-1">
+          <h2>Let's build your profile</h2>
+          <p class="sub">Start with the basics — we'll use this to find your fit.</p>
+          <div class="honesty-note">
+            <span class="honesty-icon">🔒</span>
+            <div><strong>Be honest — this is just for you.</strong> Coaches never see this data. If you inflate your stats, you'll just end up matched to schools that aren't realistic, and you'll waste your time. The more accurate you are, the better your results.</div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>First Name</label><input class="finput" id="firstName" placeholder="Marcus" oninput="checkNext()"/></div>
+            <div class="field"><label>Last Name</label><input class="finput" id="lastName" placeholder="Williams" oninput="checkNext()"/></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Position</label>
+              <select class="fselect" id="position" onchange="checkNext()">
+                <option value="">Select…</option>
+                <option>QB</option><option>RB</option><option>WR</option><option>TE</option>
+                <option>OL</option><option>DL</option><option>LB</option><option>CB</option><option>S</option><option>K/P</option>
+              </select>
+            </div>
+            <div class="field"><label>Graduation Year</label>
+              <select class="fselect" id="gradYear" onchange="checkNext()">
+                <option value="">Select…</option>
+                <option>2025</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label>Home State</label><input class="finput" id="state" placeholder="e.g. Ohio"/></div>
+          <div class="field"><label>High School Name</label><input class="finput" id="highSchool" placeholder="e.g. Mater Dei High School"/><p class="hint">Used to calibrate competition level and calculate distances</p></div>
+        </div>
+        <!-- Step 2 -->
+        <div id="step-2" style="display:none">
+          <h2>Athletic Profile</h2>
+          <p class="sub">Be honest — this is how we find schools where you'll actually compete.</p>
+          <div class="row2">
+            <div class="field"><label>Height</label><input class="finput" id="height" placeholder='6&apos;2"' oninput="checkNext()"/></div>
+            <div class="field"><label>Weight (lbs)</label><input class="finput" type="number" id="weight" placeholder="215" oninput="checkNext()"/></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>40-Yard Dash</label><input class="finput" id="forty" placeholder="4.65"/><p class="hint">Best verified time</p></div>
+            <div class="field"><label>Bench Press (lbs)</label><input class="finput" type="number" id="bench" placeholder="225"/><p class="hint">Leave blank if unknown</p></div>
+          </div>
+          <div class="field"><label>Highlight Film Link</label><input class="finput" id="film" placeholder="https://hudl.com/video/..."/><p class="hint">YouTube, Hudl, or any public link</p></div>
+        </div>
+        <!-- Step 3 -->
+        <div id="step-3" style="display:none">
+          <h2>Academic Profile</h2>
+          <p class="sub">Schools use GPA and test scores to determine eligibility and scholarships.</p>
+          <div class="field"><label>Unweighted GPA</label><input class="finput" id="gpa" placeholder="3.2" oninput="checkNext()"/><p class="hint">On a 4.0 scale</p></div>
+          <div class="row2">
+            <div class="field"><label>SAT Score</label><input class="finput" type="number" id="sat" placeholder="1080"/><p class="hint">Optional</p></div>
+            <div class="field"><label>ACT Score</label><input class="finput" type="number" id="act" placeholder="22"/><p class="hint">Optional</p></div>
+          </div>
+          <div class="field"><label>Intended Major</label><input class="finput" id="major" placeholder="Business, Exercise Science…"/><p class="hint">Helps match schools with strong programs</p></div>
+        </div>
+        <!-- Step 4 -->
+        <div id="step-4" style="display:none">
+          <h2>Your Football Career</h2>
+          <p class="sub">Coaches care about production. Tell us your story.</p>
+          <div class="field">
+            <label>Career Summary</label>
+            <textarea class="ftextarea" id="career" style="min-height:160px;" placeholder="e.g. 3-year varsity starter at Mater Dei. 2x All-State, 1,200 receiving yards and 14 TDs junior year. Team went 12-1, made state semifinals. Played against multiple D1 commits."></textarea>
+            <p class="hint">Include: years on varsity, stats, awards, level of competition, notable games or opponents</p>
+          </div>
+        </div>
+        <!-- Step 5 -->
+        <div id="step-5" style="display:none">
+          <h2>Your Preferences</h2>
+          <p class="sub">Tell us what matters most — we'll weight your matches accordingly.</p>
+          <div class="field"><label>Distance from Home</label>
+            <select class="fselect" id="distance"><option value="">Select…</option><option>Anywhere</option><option>Within 2 hours</option><option>Within 4 hours</option><option>Within 6 hours</option></select>
+          </div>
+          <div class="field">
+            <label>Geographic Preference <span style="color:#94a3b8;font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;">(optional)</span></label>
+            <div class="region-chips" id="region-chips">
+              <button type="button" class="region-chip" onclick="toggleRegion(this)">Northeast</button>
+              <button type="button" class="region-chip" onclick="toggleRegion(this)">Southeast</button>
+              <button type="button" class="region-chip" onclick="toggleRegion(this)">Midwest</button>
+              <button type="button" class="region-chip" onclick="toggleRegion(this)">Southwest</button>
+              <button type="button" class="region-chip" onclick="toggleRegion(this)">West</button>
+              <button type="button" class="region-chip" onclick="toggleRegion(this)">Mid-Atlantic</button>
+            </div>
+            <p class="hint">Leave all unselected for no regional preference</p>
+          </div>
+          <div class="field"><label>School Size</label>
+            <select class="fselect" id="schoolSize"><option value="">Select…</option><option>No Preference</option><option>Small (&lt;5,000)</option><option>Medium (5k–15k)</option><option>Large (15k+)</option></select>
+          </div>
+          <div class="field">
+            <label>What matters most? <span style="color:#94a3b8;font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;">(drag to rank — #1 = most important)</span></label>
+            <div class="rank-list" id="priorities-list">
+              <div class="rank-item" draggable="true" data-value="Athletics"><span class="rank-handle">⠿</span><span class="rank-emoji">🏈</span><span class="rank-label">Athletics</span><span class="rank-num">1</span></div>
+              <div class="rank-item" draggable="true" data-value="Academics"><span class="rank-handle">⠿</span><span class="rank-emoji">📚</span><span class="rank-label">Academics</span><span class="rank-num">2</span></div>
+              <div class="rank-item" draggable="true" data-value="Career Opportunities"><span class="rank-handle">⠿</span><span class="rank-emoji">💼</span><span class="rank-label">Career Opportunities</span><span class="rank-num">3</span></div>
+              <div class="rank-item" draggable="true" data-value="Social Life"><span class="rank-handle">⠿</span><span class="rank-emoji">🎉</span><span class="rank-label">Social Life</span><span class="rank-num">4</span></div>
+              <div class="rank-item" draggable="true" data-value="Location"><span class="rank-handle">⠿</span><span class="rank-emoji">📍</span><span class="rank-label">Location</span><span class="rank-num">5</span></div>
+              <div class="rank-item" draggable="true" data-value="School Size"><span class="rank-handle">⠿</span><span class="rank-emoji">🏫</span><span class="rank-label">School Size</span><span class="rank-num">6</span></div>
+            </div>
+            <p class="rank-hint">Drag to reorder</p>
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="btn-back" onclick="prevStep()">← Back</button>
+          <button class="btn-next" id="btn-next" onclick="nextStep()" disabled>Continue →</button>
+        </div>
+      </div>
+      <p class="form-foot" id="form-foot">Step 1 of 5 · Your data is private and never shared</p>
+    </div>
+  </div>
+
+  <!-- SCHOOLS -->
+  <div id="tab-schools" class="tab-page">
+    <div id="schools-empty" class="empty-schools">
+      <div class="empty-schools-icon">🏟️</div>
+      <h2>Your matches will appear here</h2>
+      <p>Complete your profile and our AI will find the best-fit college programs for you — ranked by division, location, and fit score.</p>
+      <button class="cta-btn" onclick="goTab('profile')">Build My Profile →</button>
+    </div>
+    <div id="schools-results" style="display:none;">
+      <div class="schools-inner">
+        <div class="profile-banner">
+          <div>
+            <div class="banner-label">Recruiting Profile</div>
+            <div class="banner-name" id="b-name">—</div>
+            <div class="banner-sub" id="b-sub">—</div>
+            <div class="banner-stats">
+              <div><div class="banner-stat-lbl">40 Time</div><div class="banner-stat-val" id="b-forty">—</div></div>
+              <div><div class="banner-stat-lbl">State</div><div class="banner-stat-val" id="b-state">—</div></div>
+              <div><div class="banner-stat-lbl">High School</div><div class="banner-stat-val" id="b-region">—</div></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
+            <div class="banner-gpa-box">
+              <div class="banner-gpa-lbl">GPA</div>
+              <div class="banner-gpa-val" id="b-gpa">—</div>
+            </div>
+            <button class="btn-ghost" onclick="goTab('profile')" style="font-size:12px;padding:5px 12px;">✏️ Edit Profile</button>
+          </div>
+        </div>
+        <div class="dash-cols">
+          <div>
+            <div class="lcard">
+              <div class="lcard-title">Your Division Fit</div>
+              <div class="lcard-sub">Analytical match — weighted by size, speed, production, academics, high school program, class year, and preferences</div>
+              <div id="div-bars"></div>
+              <div class="insight-box"><div class="insight-label">📋 Your Personal Scouting Report</div><p id="insight-text" style="margin-top:6px;">Complete your profile to get your personal scouting report.</p></div>
+            </div>
+            <div class="lcard">
+              <div class="lcard-title" style="margin-bottom:14px">⚡ Quick Tips</div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:9px;padding:11px 13px;">
+                  <div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:2px;">Save schools to build your Action Plan</div>
+                  <div style="font-size:11px;color:#94a3b8;line-height:1.5;">Hit "Save to My Schools" on any match — tasks will appear in your Action Plan tab sorted by date.</div>
+                </div>
+                <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:9px;padding:11px 13px;">
+                  <div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:2px;">Email coaches early</div>
+                  <div style="font-size:11px;color:#94a3b8;line-height:1.5;">Most D2 coaches begin evaluating juniors in spring. Don't wait until senior year.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+              <div class="subtabs">
+                <button class="subtab active" id="subtab-matches" onclick="switchSubtab('matches')">All Matches</button>
+                <button class="subtab" id="subtab-folder" onclick="switchSubtab('folder')">📁 My Schools <span class="subtab-badge" id="subtab-badge" style="display:none">0</span></button>
+              </div>
+              <div id="filter-area" style="display:flex;gap:8px;align-items:center;">
+                <select class="sort-sel" onchange="sortCards(this.value)"><option value="fit">Best Fit</option><option value="distance">Closest</option></select>
+              </div>
+            </div>
+            <div id="panel-matches">
+              <div class="chips" id="chips">
+                <button class="chip active" onclick="filterCards('All',this)">All</button>
+                <button class="chip" onclick="filterCards('FBS',this)">FBS</button>
+                <button class="chip" onclick="filterCards('FCS',this)">FCS</button>
+                <button class="chip" onclick="filterCards('D2',this)">D2</button>
+                <button class="chip" onclick="filterCards('D3',this)">D3</button>
+                <button class="chip" onclick="filterCards('NAIA',this)">NAIA</button>
+                <button class="chip" onclick="filterCards('JUCO',this)">JUCO</button>
+              </div>
+              <div style="font-size:12px;color:#94a3b8;margin-bottom:12px;" id="match-count">8 schools matched</div>
+              <div class="school-grid" id="school-grid"></div>
+              <div class="upgrade-banner">
+                <div><div class="upgrade-title">🔒 15 more schools in your match list</div><div class="upgrade-sub">Upgrade to Pro for coach contacts, AI outreach emails &amp; full results.</div></div>
+                <button class="upgrade-btn">Unlock All →</button>
+              </div>
+            </div>
+            <div id="panel-folder" style="display:none;">
+              <div class="school-search-wrap">
+                <div class="school-search-label">🔍 Search your matched schools</div>
+                <input class="finput school-search-input" id="school-search" placeholder="e.g. Ohio State, Ferris State…" oninput="renderSearchResults()" autocomplete="off"/>
+                <div id="search-results"></div>
+              </div>
+              <div id="folder-content"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTION PLAN -->
+  <div id="tab-action" class="tab-page">
+    <div class="action-inner">
+      <div class="action-page-title">Action Plan</div>
+      <div class="action-page-sub">Your recruiting tasks, sorted chronologically</div>
+      <div id="action-content"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div id="tab-about" class="tab-page">
+    <div class="coming-soon">
+      <div class="coming-soon-icon">🏈</div>
+      <div class="coming-soon-badge">COMING SOON</div>
+      <h2>About ScoutGrade</h2>
+      <p>We're working on it. Check back soon to learn more about who we are and what we're building.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ══ Data ══════════════════════════════════════════════════════════════════════
+let SCHOOLS = [];
+const DIV_COLORS = {
+  'D2':   {t:'#38bdf8',bg:'rgba(56,189,248,.12)'},
+  'D3':   {t:'#818cf8',bg:'rgba(129,140,248,.12)'},
+  'NAIA': {t:'#a78bfa',bg:'rgba(167,139,250,.12)'},
+  'FCS':  {t:'#f97316',bg:'rgba(249,115,22,.12)'},
+  'FBS':  {t:'#dc2626',bg:'rgba(220,38,38,.12)'},
+  'JUCO': {t:'#94a3b8',bg:'rgba(100,116,139,.12)'},
+};
+
+// ══ State ═════════════════════════════════════════════════════════════════════
+let currentStep     = 1;
+let activeFilter    = 'All';
+let currentSort     = 'fit';
+let savedSchools    = new Set();
+let openFolderCards = new Set();
+let hasMatched      = false;
+
+// ══ Tab navigation ════════════════════════════════════════════════════════════
+function goTab(tab) {
+  document.querySelectorAll('.tnav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+  document.getElementById('tnav-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'action') renderActionPlan();
+  if (tab === 'schools' && hasMatched) {
+    setTimeout(() => { document.querySelectorAll('.div-fill').forEach(el => { el.style.width = el.dataset.pct + '%'; }); }, 150);
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══ Loading ═══════════════════════════════════════════════════════════════════
+function showLoader() {
+  document.getElementById('loading-overlay').style.display = 'flex';
+  const msgs = ['Evaluating division fit…','Scanning 1,200+ programs…','Matching your measurables…','Checking academic eligibility…','Ranking your top schools…','Almost there…'];
+  let i = 0;
+  const sub = document.getElementById('loader-sub');
+  sub.textContent = msgs[0];
+  return setInterval(() => { i = (i+1) % msgs.length; sub.textContent = msgs[i]; }, 2000);
+}
+function hideLoader(iv) { clearInterval(iv); document.getElementById('loading-overlay').style.display = 'none'; }
+
+// ══ AI Match ══════════════════════════════════════════════════════════════════
+async function runAIMatch() {
+  const btn = document.getElementById('btn-next');
+  btn.disabled = true; btn.textContent = '⏳ Finding your matches…';
+  const iv = showLoader();
+  const profile = {
+    firstName: v('firstName'), lastName: v('lastName'), position: v('position'), gradYear: v('gradYear'),
+    state: v('state'), highSchool: v('highSchool'), height: v('height'), weight: v('weight'),
+    forty: v('forty'), bench: v('bench'), film: v('film'), gpa: v('gpa'),
+    sat: v('sat'), act: v('act'), major: v('major'), career: v('career'),
+    distance: v('distance'), region: getRegions(), schoolSize: v('schoolSize'),
+    priorities: getPriorities().join(' > '),
+  };
+  try {
+    const res  = await fetch('/.netlify/functions/match', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(profile) });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    hideLoader(iv);
+    goDashboard(data);
+  } catch(err) {
+    hideLoader(iv);
+    btn.disabled = false; btn.textContent = '🏈 Find My Schools →';
+    alert('Error: ' + err.message);
+  }
+}
+
+function goDashboard(data) {
+  hasMatched = true;
+  populateBanner();
+  renderDivBars(data);
+  SCHOOLS = data.schools.map(s => ({
+    name: s.name, abbr: s.abbr, div: s.division, conf: s.conference,
+    loc: s.location, dist: s.distance, distN: 100, fit: s.fitScore,
+    size: s.enrollment || '—', gpa: s.avgGpa || '—',
+    c1: s.primaryColor || '#1d4ed8', c2: s.secondaryColor || '#38bdf8',
+    coach: s.coachName, email: s.coachEmail, emailDate: s.emailDate,
+    camp: s.campName, campDate: s.campDate, followDate: s.followDate,
+    fitReason: s.fitReason || '', concern: s.concern || '',
+  }));
+  renderSchools();
+  renderFolder();
+  document.getElementById('schools-empty').style.display = 'none';
+  document.getElementById('schools-results').style.display = 'block';
+  document.getElementById('schools-dot').style.display = 'inline-block';
+  goTab('schools');
+  setTimeout(() => { document.querySelectorAll('.div-fill').forEach(el => { el.style.width = el.dataset.pct + '%'; }); }, 200);
+  setTimeout(() => { const g = document.getElementById('school-grid'); if (g) g.scrollIntoView({behavior:'smooth',block:'start'}); }, 450);
+}
+
+// ══ Region / Priorities ═══════════════════════════════════════════════════════
+function toggleRegion(btn) { btn.classList.toggle('active'); }
+function getRegions() {
+  const a = [...document.querySelectorAll('.region-chip.active')].map(b => b.textContent);
+  return a.length ? a.join(', ') : 'No preference';
+}
+function initDragRank() {
+  const list = document.getElementById('priorities-list');
+  if (!list || list.dataset.init) return; list.dataset.init = '1';
+  let dragging = null;
+  list.querySelectorAll('.rank-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragging = item; setTimeout(() => item.classList.add('dragging'), 0); });
+    item.addEventListener('dragend',   () => { item.classList.remove('dragging'); dragging = null; updateRankNums(); });
+    item.addEventListener('dragover',  e => {
+      e.preventDefault(); if (!dragging || dragging === item) return;
+      const r = item.getBoundingClientRect();
+      if (e.clientY < r.top + r.height/2) list.insertBefore(dragging, item);
+      else list.insertBefore(dragging, item.nextSibling);
+    });
+    item.addEventListener('touchstart', () => { dragging = item; item.classList.add('dragging'); }, {passive:true});
+    item.addEventListener('touchmove', e => {
+      e.preventDefault(); const y = e.touches[0].clientY;
+      [...list.querySelectorAll('.rank-item:not(.dragging)')].forEach(el => {
+        const r = el.getBoundingClientRect();
+        if (y > r.top && y < r.bottom) { if (y < r.top+r.height/2) list.insertBefore(dragging,el); else list.insertBefore(dragging,el.nextSibling); }
+      });
+    }, {passive:false});
+    item.addEventListener('touchend', () => { item.classList.remove('dragging'); dragging = null; updateRankNums(); });
+  });
+}
+function updateRankNums() { document.querySelectorAll('#priorities-list .rank-item').forEach((item,i) => { item.querySelector('.rank-num').textContent = i+1; }); }
+function getPriorities() { return [...document.querySelectorAll('#priorities-list .rank-item')].map(item => item.dataset.value); }
+
+// ══ Form steps ════════════════════════════════════════════════════════════════
+function showStep(n) {
+  for (let i=1;i<=5;i++) document.getElementById('step-'+i).style.display = i===n?'block':'none';
+  document.getElementById('btn-next').textContent = n<5 ? 'Continue →' : '🏈 Find My Schools →';
+  document.getElementById('form-foot').textContent = `Step ${n} of 5 · Your data is private and never shared`;
+  if (n===5) initDragRank();
+  currentStep = n; renderStepIndicator(); checkNext();
+  // Scroll to top of form so new step is always visible
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function nextStep() { currentStep < 5 ? showStep(currentStep+1) : runAIMatch(); }
+function prevStep() { if (currentStep > 1) showStep(currentStep-1); }
+function checkNext() {
+  const btn = document.getElementById('btn-next'); let ok = false;
+  if (currentStep===1) ok = v('firstName')&&v('lastName')&&v('position')&&v('gradYear');
+  else if (currentStep===2) ok = v('height')&&v('weight');
+  else if (currentStep===3) ok = v('gpa');
+  else ok = true;
+  btn.disabled = !ok;
+}
+function v(id) { const el = document.getElementById(id); return el && el.value.trim(); }
+function renderStepIndicator() {
+  const el = document.getElementById('step-indicator'); let html = '';
+  for (let i=0;i<5;i++) {
+    const s = i<currentStep-1?'done':i===currentStep-1?'active':'pending';
+    html += `<div class="step-dot ${s}">${i<currentStep-1?'✓':i+1}</div>`;
+    if (i<4) html += `<div class="step-line ${i<currentStep-1?'done':'pending'}"></div>`;
+  }
+  el.innerHTML = html;
+}
+
+// ══ Banner ════════════════════════════════════════════════════════════════════
+function populateBanner() {
+  document.getElementById('b-name').textContent    = (v('firstName')||'') + ' ' + (v('lastName')||'');
+  document.getElementById('b-sub').textContent     = `${v('position')||'—'} · ${v('height')||'—'} · ${v('weight')||'—'} lbs · Class of ${v('gradYear')||'—'}`;
+  document.getElementById('b-gpa').textContent     = v('gpa') || '—';
+  document.getElementById('b-forty').textContent   = v('forty') ? v('forty')+'s' : '—';
+  document.getElementById('b-state').textContent   = v('state') || '—';
+  document.getElementById('b-region').textContent  = v('highSchool') || v('state') || '—';
+}
+
+// ══ Division bars ═════════════════════════════════════════════════════════════
+function renderDivBars(data) {
+  const colors = {'FBS (D1)':'#dc2626','FCS (D1-AA)':'#f97316','Division II':'#38bdf8','Division III':'#818cf8','NAIA':'#a78bfa','JUCO':'#94a3b8'};
+  const descs  = {'FBS (D1)':'Power 5 and Group of 5 programs','FCS (D1-AA)':'Mid-major D1 programs','Division II':'Competitive scholarships available','Division III':'Strong academic focus, no athletic scholarships','NAIA':'Smaller programs, scholarship flexibility','JUCO':'Development pathway, 2-year programs'};
+
+  // Normalize raw scores so they sum to exactly 100%
+  let normalized = {};
+  if (data && data.divisions) {
+    const raw = data.divisions;
+    const total = Object.values(raw).reduce((s,v) => s+(v||0), 0);
+    if (total > 0) {
+      Object.entries(raw).forEach(([k,v]) => { normalized[k] = Math.round(((v||0)/total)*100); });
+      const diff = 100 - Object.values(normalized).reduce((s,v)=>s+v,0);
+      const topKey = Object.entries(normalized).sort((a,b)=>b[1]-a[1])[0]?.[0];
+      if (topKey) normalized[topKey] += diff;
+    }
+  }
+
+  const rows = Object.entries(colors).map(([label, color]) => {
+    const score = normalized[label] ?? 0;
+    const isBest = data ? label === data.topDivision : false;
+    return `<div class="div-row"><div class="div-hdr"><div><span class="div-name${isBest?' best':''}">${label}</span>${isBest?'<span class="best-pill">BEST FIT</span>':''}</div><span class="div-pct" style="color:${color}">${score}%</span></div><div class="div-track"><div class="div-fill" data-pct="${score}" style="background:${color}"></div></div><div class="div-desc">${descs[label]}</div></div>`;
+  }).join('');
+  document.getElementById('div-bars').innerHTML = rows;
+  if (data && data.insight) document.getElementById('insight-text').textContent = data.insight;
+}
+
+// ══ School cards ══════════════════════════════════════════════════════════════
+function divBadge(div) { const c=DIV_COLORS[div]||{t:'#94a3b8',bg:'rgba(100,116,139,.12)'}; return `<span class="dbadge" style="background:${c.bg};color:${c.t}">${div}</span>`; }
+function fitBadge(s) { const [c,l]=s>=85?['#38bdf8','Strong Fit']:s>=65?['#fbbf24','Potential Fit']:['#ef4444','Reach']; return `<span class="fbadge" style="background:${c}18;color:${c};border:1px solid ${c}30">${l}</span>`; }
+function slug(n) { return n.replace(/[^a-z0-9]/gi,'_'); }
+function renderSchools() {
+  let list = SCHOOLS.filter(s => activeFilter==='All' || s.div===activeFilter);
+  if (currentSort==='fit') list.sort((a,b) => b.fit-a.fit); else list.sort((a,b) => a.distN-b.distN);
+  document.getElementById('match-count').textContent = `${list.length} school${list.length!==1?'s':''} matched`;
+  document.getElementById('school-grid').innerHTML = list.map(s => schoolCardHTML(s)).join('');
+}
+function footballIcon(c1, c2) {
+  return `<svg viewBox="0 0 40 40" width="26" height="26" fill="none">
+    <ellipse cx="20" cy="20" rx="16" ry="10" fill="white" opacity=".92"/>
+    <line x1="20" y1="10" x2="20" y2="30" stroke="${c2||'#0a0a0a'}" stroke-width="1.4" opacity=".5"/>
+    <line x1="14" y1="16" x2="26" y2="16" stroke="${c2||'#0a0a0a'}" stroke-width="1.1" opacity=".45"/>
+    <line x1="14" y1="20" x2="26" y2="20" stroke="${c2||'#0a0a0a'}" stroke-width="1.1" opacity=".45"/>
+    <line x1="14" y1="24" x2="26" y2="24" stroke="${c2||'#0a0a0a'}" stroke-width="1.1" opacity=".45"/>
+  </svg>`;
+}
+
+function schoolCardHTML(s) {
+  const sc = s.fit>=85?'#38bdf8':s.fit>=65?'#fbbf24':'#ef4444';
+  const saved = savedSchools.has(s.name);
+  const fitBlurb   = s.fitReason  ? `<div class="school-fit-blurb"><span class="blurb-label blurb-fit">✓ Why it fits</span> ${s.fitReason}</div>` : '';
+  const warnBlurb  = s.concern    ? `<div class="school-fit-blurb"><span class="blurb-label blurb-warn">⚠ To consider</span> ${s.concern}</div>` : '';
+  return `<div class="school-card"><div class="school-bar" style="background:linear-gradient(90deg,${s.c1},${s.c2})"></div><div class="school-body"><div class="school-top"><div style="display:flex;align-items:center"><div class="school-logo-box" style="background:${s.c1};display:flex;align-items:center;justify-content:center;">${footballIcon(s.c1,s.c2)}</div><div class="school-info"><div class="school-name">${s.name}</div><div class="school-conf">${s.conf}</div></div></div><div class="fit-ring" style="border-color:${sc}"><span class="fit-num" style="color:${sc}">${s.fit}</span><span class="fit-lbl">FIT</span></div></div><div class="school-badges">${divBadge(s.div)}${fitBadge(s.fit)}</div><div class="school-details"><div class="school-detail"><span>📍</span><span>${s.loc}</span></div><div class="school-detail"><span>🚗</span><span>${s.dist} away</span></div><div class="school-detail"><span>🎓</span><span>${s.size} students</span></div><div class="school-detail"><span>📚</span><span>Avg GPA ${s.gpa}</span></div></div>${fitBlurb}${warnBlurb}<button id="savebtn-${slug(s.name)}" class="save-btn${saved?' saved':''}" onclick="toggleSave('${s.name}')">${saved?'✅ Saved to My Schools':'📁 Save to My Schools'}</button></div></div>`;
+}
+function filterCards(f,btn) { activeFilter=f; document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active')); btn.classList.add('active'); renderSchools(); }
+function sortCards(val) { currentSort=val; renderSchools(); }
+
+// ══ Subtabs (within Schools) ══════════════════════════════════════════════════
+function switchSubtab(tab) {
+  const isM = tab==='matches';
+  document.getElementById('subtab-matches').classList.toggle('active', isM);
+  document.getElementById('subtab-folder').classList.toggle('active', !isM);
+  document.getElementById('panel-matches').style.display = isM?'block':'none';
+  document.getElementById('panel-folder').style.display  = isM?'none':'block';
+  document.getElementById('filter-area').style.display   = isM?'flex':'none';
+  if (!isM) renderFolder();
+}
+
+// ══ Save / Folder ═════════════════════════════════════════════════════════════
+function toggleSave(name) {
+  if (savedSchools.has(name)) savedSchools.delete(name); else savedSchools.add(name);
+  updateBadges(); renderSchools(); renderFolder(); renderActionPlan();
+}
+function updateBadges() {
+  const n = savedSchools.size;
+  const sb = document.getElementById('subtab-badge'), ab = document.getElementById('action-badge');
+  if (n>0) { sb.style.display='inline'; sb.textContent=n; ab.style.display='inline'; ab.textContent=n*3; }
+  else { sb.style.display='none'; ab.style.display='none'; }
+}
+function renderFolder() {
+  const el = document.getElementById('folder-content'); if (!el) return;
+  if (savedSchools.size===0) { el.innerHTML=`<div class="empty-folder"><div style="font-size:40px;margin-bottom:12px">📁</div><div style="font-size:16px;font-weight:700;color:#fff">No schools saved yet</div><p>Go to <strong style="color:#38bdf8">All Matches</strong> and save schools to see them here with action items.</p></div>`; return; }
+  const list = SCHOOLS.filter(s => savedSchools.has(s.name));
+  el.innerHTML = `<div style="font-size:12px;color:#94a3b8;margin-bottom:14px">${list.length} school${list.length!==1?'s':''} saved — tasks added to your Action Plan</div><div class="folder-list">${list.map(s=>folderCardHTML(s)).join('')}</div>`;
+}
+function folderCardHTML(s) {
+  const sc = s.fit>=85?'#38bdf8':s.fit>=65?'#fbbf24':'#ef4444';
+  const open = openFolderCards.has(s.name);
+  return `<div class="folder-school-card"><div class="fsc-header" onclick="toggleFolderCard('${s.name}')"><div class="fsc-left"><div class="fsc-logo" style="background:${s.c1}">${s.abbr}</div><div><div class="fsc-name">${s.name}</div><div class="fsc-meta">${divBadge(s.div)}<span>${s.loc}</span><span>${s.dist} away</span></div></div></div><div class="fsc-right"><span class="fsc-fitscore" style="color:${sc}">${s.fit} fit</span><button class="remove-btn" onclick="event.stopPropagation();toggleSave('${s.name}')">Remove</button><span class="fsc-chevron${open?' open':''}">▼</span></div></div><div class="fsc-steps${open?' open':''}"><div class="fsc-divider"></div><div class="steps-title">Action Items</div><div class="action-item"><div class="action-icon email-icon">📧</div><div><div class="action-title">Email ${s.coach}</div><div class="action-detail">Send intro to <a href="mailto:${s.email}">${s.email}</a> — share your film and express interest.</div><span class="action-date">📅 Send by ${s.emailDate}</span></div></div><div class="action-item"><div class="action-icon camp-icon">🏕️</div><div><div class="action-title">Attend ${s.camp}</div><div class="action-detail">Get evaluated in person. Camps are where offers happen.</div><span class="action-date camp">📅 ${s.campDate}</span></div></div><div class="action-item"><div class="action-icon followup-icon">🔁</div><div><div class="action-title">Follow up with ${s.coach}</div><div class="action-detail">Send a polite follow-up if you haven't heard back.</div><span class="action-date followup">📅 ${s.followDate}</span></div></div></div></div>`;
+}
+function toggleFolderCard(name) { if (openFolderCards.has(name)) openFolderCards.delete(name); else openFolderCards.add(name); renderFolder(); }
+
+// ══ School Search ════════════════════════════════════════════════════════════
+function renderSearchResults() {
+  const el = document.getElementById('search-results'); if (!el) return;
+  const q = (document.getElementById('school-search')?.value || '').trim().toLowerCase();
+  if (!q) { el.innerHTML = ''; return; }
+  const hits = SCHOOLS.filter(s => s.name.toLowerCase().includes(q) || s.conf.toLowerCase().includes(q) || s.loc.toLowerCase().includes(q));
+  if (!hits.length) { el.innerHTML = `<div class="search-no-results">No schools matching "${q}" in your matched list.</div>`; return; }
+  el.innerHTML = hits.map(s => {
+    const saved = savedSchools.has(s.name);
+    const sc = s.fit>=85?'#38bdf8':s.fit>=65?'#fbbf24':'#ef4444';
+    return `<div class="search-result-item">
+      <div class="search-result-left">
+        <div class="search-result-logo" style="background:${s.c1}">${footballIcon(s.c1,s.c2)}</div>
+        <div>
+          <div class="search-result-name">${s.name}</div>
+          <div class="search-result-meta">${s.div} · ${s.conf} · <span style="color:${sc}">Fit ${s.fit}</span></div>
+          ${s.fitReason ? `<div style="font-size:11px;color:#94a3b8;margin-top:3px;max-width:320px;">${s.fitReason}</div>` : ''}
+        </div>
+      </div>
+      <button class="search-add-btn${saved?' saved':''}" onclick="toggleSave('${s.name}');renderSearchResults();renderFolder();">
+        ${saved ? '✅ Saved' : '+ Add'}
+      </button>
+    </div>`;
+  }).join('');
+}
+
+// ══ Action Plan ═══════════════════════════════════════════════════════════════
+function parseDate(str) {
+  if (!str) return new Date(9999,0);
+  const d = new Date(str); return isNaN(d) ? new Date(9999,0) : d;
+}
+function addDays(dateStr, days) {
+  const d = parseDate(dateStr);
+  if (d.getFullYear() > 9000) return dateStr;
+  d.setDate(d.getDate() + days);
+  return d.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
+}
+
+const OUTREACH_GUIDANCE = {
+  email: {
+    icon: '📧',
+    label: 'What to include in your intro email:',
+    tips: ['Your full name, position, height/weight, 40 time, and graduation year','Your unweighted GPA and any test scores','A direct link to your Hudl or highlight film','1–2 specific sentences on why you\'re interested in their program (mention their conference, a recent win, or their academic reputation)','Keep it under 150 words — coaches get hundreds of emails. Be direct and easy to read.'],
+  },
+  dm: {
+    icon: '🐦',
+    label: 'What to say in your Twitter DM:',
+    tips: ['"Coach [Name], I just sent you an email at [address] — I\'m [Name], a [Year] [Position] from [High School]."','Drop your Hudl link directly in the DM','Tag them in a highlight clip if your account is public','Follow the program\'s account and like/retweet a few recent posts before DMing — it shows genuine interest'],
+  },
+  followup: {
+    icon: '🔁',
+    label: 'What to include in your follow-up:',
+    tips: ['Reference your original email ("I reached out on [date]...")','Include something new — a recent stat update, a new film cut, or a camp result','Keep it even shorter than the intro — 3–4 sentences max','If you\'ve visited campus or attended their camp, mention it'],
+  },
+  camp: {
+    icon: '🏕️',
+    label: 'How to make the most of this camp:',
+    tips: ['Arrive early — introduce yourself to the coaching staff by name','Bring multiple copies of your recruiting card (name, position, stats, Hudl link, contact info)','Compete like it\'s game speed. Coaches are evaluating effort as much as measurables','Follow up with the coach via email within 48 hours of the camp'],
+  },
+  social: {
+    icon: '📲',
+    label: 'Social media recruiting tips:',
+    tips: ['Tag the school\'s official football account and the position coach when posting','Use hashtags like #[SchoolMascot]Football or search who they\'ve recruited before','Keep your profile public during recruiting — coaches will look you up','Post game film clips, not just highlights — coaches want to see how you play in real situations'],
+  },
+};
+
+function taskHTML(t) {
+  const g = OUTREACH_GUIDANCE[t.type] || {};
+  const tips = g.tips ? `<div class="tt-guidance"><div class="tt-guidance-label">${g.label}</div><ul class="tt-guidance-list">${g.tips.map(tip=>`<li>${tip}</li>`).join('')}</ul></div>` : '';
+  const schoolLine = t.s ? `<div class="tt-school">${t.s.name} · ${t.s.div}</div>` : `<div class="tt-school" style="color:#38bdf8">General Recruiting Task</div>`;
+  return `<div class="timeline-task">
+    <div class="tt-icon ${t.type}">${g.icon||'📌'}</div>
+    <div style="flex:1;min-width:0;">
+      <div class="tt-title">${t.label}</div>
+      ${schoolLine}
+      <div class="tt-date ${t.type}" style="margin:5px 0 10px;">📅 ${t.dateStr||'TBD'}</div>
+      ${tips}
+    </div>
+  </div>`;
+}
+
+function getSocialTasks(gradYear) {
+  const yr = parseInt(gradYear) || 2026;
+  const tasks = [];
+  // Build a recruiting calendar based on grad year
+  // Mid-season highlights post
+  tasks.push({type:'social', date:new Date(yr-1, 9, 1), dateStr:`October ${yr-1}`, s:null, label:'Post mid-season highlight reel on social media', detail:'Tag all coaches you\'re recruiting and link your Hudl'});
+  // End of season recap
+  tasks.push({type:'social', date:new Date(yr-1, 11, 1), dateStr:`December ${yr-1}`, s:null, label:'Post full season highlight film on social media', detail:'Your best moments from the entire season — this is what coaches watch in the winter'});
+  // Spring 7v7
+  tasks.push({type:'social', date:new Date(yr, 3, 1), dateStr:`April ${yr}`, s:null, label:'Post spring / 7-on-7 highlights on social media', detail:'Coaches actively evaluate in the spring. Stay visible.'});
+  // Camp season
+  tasks.push({type:'social', date:new Date(yr, 6, 1), dateStr:`July ${yr}`, s:null, label:'Post camp performance clips on social media', detail:'Show your camp results and tag programs you\'ve attended'});
+  return tasks;
+}
+
+function renderActionPlan() {
+  const el = document.getElementById('action-content'); if (!el) return;
+  const list = SCHOOLS.filter(s => savedSchools.has(s.name));
+  if (list.length===0) {
+    el.innerHTML = `<div class="empty-action"><div class="empty-action-icon">📅</div><h2>No tasks yet</h2><p>Save schools from your matches and your action plan will populate here — sorted by date so you always know what to do next.</p><button class="cta-btn" onclick="goTab('schools')" style="font-size:15px;padding:13px 32px;">View My Matches →</button></div>`;
+    return;
+  }
+  const tasks = [];
+  const gradYear = v('gradYear');
+  list.forEach(s => {
+    tasks.push({type:'email',    date:parseDate(s.emailDate),  dateStr:s.emailDate,  s, label:`Email ${s.coach} at ${s.name}`});
+    tasks.push({type:'dm',       date:parseDate(addDays(s.emailDate, 3)), dateStr:addDays(s.emailDate, 3), s, label:`Twitter DM ${s.coach} at ${s.name}`});
+    tasks.push({type:'followup', date:parseDate(s.followDate), dateStr:s.followDate, s, label:`Follow up with ${s.coach} at ${s.name}`});
+    tasks.push({type:'camp',     date:parseDate(s.campDate),   dateStr:s.campDate,   s, label:`Attend ${s.camp}`});
+  });
+  // Add seasonal social tasks
+  getSocialTasks(gradYear).forEach(t => tasks.push(t));
+  tasks.sort((a,b) => a.date - b.date);
+  const byMonth = {};
+  tasks.forEach(t => {
+    const key = t.date.getFullYear()>9000 ? 'Unscheduled' : t.date.toLocaleString('default',{month:'long',year:'numeric'});
+    if (!byMonth[key]) byMonth[key] = [];
+    byMonth[key].push(t);
+  });
+  el.innerHTML = Object.entries(byMonth).map(([month, mtasks]) => `
+    <div class="timeline-month">
+      <div class="timeline-month-label">${month}</div>
+      <div class="timeline-tasks">${mtasks.map(t => taskHTML(t)).join('')}</div>
+    </div>`).join('');
+}
+
+// ══ Init ══════════════════════════════════════════════════════════════════════
+renderStepIndicator();
+showStep(1);
+renderActionPlan();
+</script>
+</body>
+</html>

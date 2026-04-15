@@ -783,7 +783,7 @@ async function runAIMatch() {
     priorities: getPriorities().join(' > '),
   };
   try {
-    const res  = await fetch('/.netlify/functions/match', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(profile) });
+    const res  = await fetch('http://localhost:8000/api/match/', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(profile) });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     hideLoader(iv);

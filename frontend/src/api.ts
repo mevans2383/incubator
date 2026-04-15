@@ -2,6 +2,10 @@ import type { AthleteProfile, AuthUser, MatchResult, SavedAthleteProfile } from 
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+// In dev, Vite proxies /api → localhost:8000 so this is empty.
+// In production, set VITE_API_URL=https://your-backend.railway.app
+const API_BASE = import.meta.env.VITE_API_URL ?? '';
+
 async function apiFetch<T>(
   path: string,
   options: RequestInit = {},
@@ -13,7 +17,7 @@ async function apiFetch<T>(
   };
   if (token) headers['Authorization'] = `Token ${token}`;
 
-  const res = await fetch(path, { ...options, headers });
+  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     throw new Error(body.non_field_errors?.[0] ?? body.detail ?? body.error ?? `Request failed (${res.status})`);

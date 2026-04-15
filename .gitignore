@@ -1,0 +1,25 @@
+# Environment
+.env
+*.env
+
+venv/
+.venv/
+**/venv/
+**/.venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+**/node_modules/
+
+# Netlify
+.netlify/
+
+# Vite build output
+frontend/dist/
+
+# Logs
+*.log

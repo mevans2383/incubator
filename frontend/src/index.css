@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #0a0a0a;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: #111; }
+  ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 99px; }
+}
+
+@layer components {
+  /* ── Inputs ─────────────────────────────────────── */
+  .dark-input {
+    width: 100%;
+    padding: 10px 13px;
+    border-radius: 9px;
+    border: 1px solid #222;
+    font-size: 14px;
+    color: #fff;
+    background: #0d0d0d;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+  }
+  .dark-input:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+  }
+  .dark-input::placeholder { color: #3a3a3a; }
+  .dark-input option { background: #111; }
+  .dark-input.error { border-color: #ef4444; }
+
+  /* ── Buttons ─────────────────────────────────────── */
+  .btn-primary {
+    background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+    color: #0a0a0a;
+    border: none;
+    border-radius: 9px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary:not(:disabled):hover {
+    box-shadow: 0 0 24px rgba(56, 189, 248, 0.4);
+    transform: translateY(-1px);
+  }
+  .btn-primary:disabled {
+    background: #1e1e1e;
+    color: #94a3b8;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-ghost {
+    background: none;
+    border: 1px solid #222;
+    border-radius: 9px;
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #94a3b8;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    font-family: inherit;
+  }
+  .btn-ghost:hover { border-color: #38bdf8; color: #38bdf8; }
+  .btn-ghost:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* ── Cards ───────────────────────────────────────── */
+  .dark-card {
+    background: #111;
+    border: 1px solid #1e1e1e;
+    border-radius: 16px;
+  }
+
+  /* ── Field label ─────────────────────────────────── */
+  .field-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 6px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* ── Sky accent ──────────────────────────────────── */
+  .accent { color: #38bdf8; }
+  .accent-gradient {
+    background: linear-gradient(90deg, #38bdf8, #7dd3fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ── Chip (region / filter) ──────────────────────── */
+  .chip {
+    padding: 7px 14px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid #222;
+    background: #0d0d0d;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-family: inherit;
+  }
+  .chip:hover { border-color: rgba(56,189,248,0.4); color: #7dd3fc; }
+  .chip.active {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.12);
+    color: #38bdf8;
+  }
+
+  /* ── Priority rank item ──────────────────────────── */
+  .rank-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #0d0d0d;
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 11px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .rank-item:hover { border-color: rgba(56,189,248,0.3); }
+  .rank-item.ranked { border-color: rgba(56,189,248,0.35); background: rgba(56,189,248,0.04); }
+
+  /* ── Division bar ────────────────────────────────── */
+  .div-track {
+    height: 6px;
+    background: #1a1a1a;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .div-fill {
+    height: 100%;
+    border-radius: 99px;
+    width: 0%;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
